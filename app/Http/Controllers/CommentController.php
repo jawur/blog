@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use League\Fractal\Manager;
 use App\Transformers\CommentTransformer;
 use League\Fractal\Resource\Collection;
+use Auth;
 
 class CommentController extends Controller
 {
@@ -15,7 +16,7 @@ class CommentController extends Controller
 
     public function __construct(Manager $fractal, CommentTransformer $commentTransformer)
     {
-        $this->middleware('auth', ['except' => ['index', 'show']]);
+        $this->middleware('auth:api', ['except' => ['index', 'show']]);
 
         $this->fractal = $fractal;
         $this->commentTransformer = $commentTransformer;
@@ -56,6 +57,8 @@ class CommentController extends Controller
         $comment->user_id = Auth::user()->id;
 
         $comment->save();
+
+        echo 'A new entry has been added successfully. ID = ' . $comment->id;
     }
 
     public function show(Comment $comment)
@@ -89,6 +92,8 @@ class CommentController extends Controller
         $comment->content = $request->content;
 
         $comment->save();
+
+        echo 'A comment with id = ' . $comment->id . ' was updated successfully.';
     }
 
     /**
@@ -106,5 +111,7 @@ class CommentController extends Controller
         $comment = Comment::find($comment->id);
 
         $comment->delete();
+
+        echo 'A comment with id = ' . $comment->id . ' was deleted successfully.';
     }
 }

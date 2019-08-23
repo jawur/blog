@@ -14,7 +14,7 @@ class PostController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['index', 'show']]);
+        $this->middleware('auth:api', ['except' => ['index', 'show']]);
     }
 
     /**
@@ -64,6 +64,8 @@ class PostController extends Controller
         $post->author_id = Author::where('user_id', Auth::user()->id)->first()->id;
 
         $post->save();
+
+        echo 'A new entry has been added successfully. ID = ' . $post->id;
     }
 
     /**
@@ -117,6 +119,8 @@ class PostController extends Controller
         $post->content = $request->content;
 
         $post->save();
+
+        echo 'A post with id = ' . $post->id . ' was updated successfully.';
     }
 
     /**
@@ -134,5 +138,7 @@ class PostController extends Controller
         $post = Post::find($post->id);
 
         $post->delete();
+
+        echo 'A post with id = ' . $post->id . ' was deleted successfully.';
     }
 }
