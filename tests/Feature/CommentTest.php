@@ -6,8 +6,6 @@ use App\Comment;
 use App\User;
 use App\Post;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CommentTest extends TestCase
 {
@@ -19,23 +17,27 @@ class CommentTest extends TestCase
 
     public function test_a_comment_can_have_post()
     {
+        $post = factory(Post::class)->create();
 
-        $comment = factory(Comment::class)->create();
+        $comment = factory(Comment::class)->create([
 
-        $post = Post::where('id', $comment->post_id)->first()->id;
+            'post_id' => $post->id,
 
-        $this->assertTrue( $post ? true : false );
+        ]);
 
+        $this->assertEquals($comment->post_id, $post->id);
     }
 
     public function test_a_comment_can_have_a_user()
     {
+        $user = factory(User::class)->create();
 
-        $comment = factory(Comment::class)->create();
+        $comment = factory(Comment::class)->create([
 
-        $user = User::where('id', $comment->user_id)->first()->id;
+            'user_id' => $user->id,
 
-        $this->assertTrue( $user ? true : false );
+        ]);
 
+        $this->assertEquals($comment->user_id, $user->id);
     }
 }

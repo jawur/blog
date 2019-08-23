@@ -21,27 +21,24 @@ class PostTest extends TestCase
         $post = factory(Post::class)->create();
 
         $comment = factory(Comment::class)->create([
+
             'post_id' => $post->id,
+
         ]);
 
-        $comments = Post::where('id',$post->id)->first()->comments;
-
-        $this->assertTrue( $comments->count() ? true : false );
-        $this->assertDatabaseHas('comments', [
-            'id' => $comment->id,
-            'content' => $comment->content,
-        ]);
-
+        $this->assertEquals($comment->post_id, $post->id);
     }
 
     public function test_post_can_have_an_author()
     {
+        $author = factory(Author::class)->create();
 
-        $post = factory(Post::class)->create();
+        $post = factory(Post::class)->create([
 
-        $author = Author::where('id' , $post->id)->first()->id;
+            'author_id' => $author->id,
 
-        $this->assertTrue( $author ? true : false );
+        ]);
 
+        $this->assertEquals($author->id, $post->author_id);
     }
 }

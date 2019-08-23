@@ -5,8 +5,6 @@ namespace Tests\Feature;
 use App\Taggable;
 use App\Tag;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class TaggableTest extends TestCase
 {
@@ -17,12 +15,14 @@ class TaggableTest extends TestCase
      */
     public function test_taggable_can_have_tags()
     {
+        $tag = factory(Tag::class)->create();
 
-        $taggable = factory(Taggable::class)->create();
+        $taggable = factory(Taggable::class)->create([
 
-        $tag = Tag::where('id', $taggable->tag_id)->first()->id;
+            'tag_id' => $tag->id,
 
-        $this->assertTrue( $tag ? true : false );
+        ]);
 
+        $this->assertEquals($tag->id, $taggable->tag_id);
     }
 }
