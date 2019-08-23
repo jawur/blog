@@ -16,4 +16,8 @@
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
 
-# End of https://www.gitignore.io/api/linux
+# Vendor folder can be pulled at anytime by copmoser
+vendor
+
+#By security reasons .env file must not be pushed
+.env
