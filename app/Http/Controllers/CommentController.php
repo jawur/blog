@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Comment;
+use App\Http\Requests\CommentStoreRequest;
+use App\Http\Requests\CommentUpdateRequest;
 use Illuminate\Http\Request;
 use League\Fractal\Manager;
 use App\Transformers\CommentTransformer;
@@ -11,13 +13,10 @@ use Auth;
 
 class CommentController extends Controller
 {
-
     private $fractal, $commentTransformer;
 
     public function __construct(Manager $fractal, CommentTransformer $commentTransformer)
     {
-        $this->middleware('auth:api', ['except' => ['index', 'show']]);
-
         $this->fractal = $fractal;
         $this->commentTransformer = $commentTransformer;
     }
@@ -27,11 +26,11 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Comment $comments)
     {
-        $comments = Comment::all();
-        $comments = new Collection($comments, $this->commentTransformer);
+        $comments = new Collection($comments->all(), $this->commentTransformer);
         $comments = $this->fractal->createData($comments);
+
         return $comments->toArray();
     }
 
@@ -41,31 +40,21 @@ class CommentController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CommentStoreRequest $request, Comment $comment)
     {
-        $data = $request->validate([
-            'title' => 'required|string|max:150',
-            'content' => 'required|string|max:500',
-            'post_id' => 'required|integer',
-        ]);
-
-        $comment = new Comment();
-
-        $comment->title = $request->title;
-        $comment->content = $request->content;
-        $comment->post_id = (int)$request->post_id;
+        $comment->title = $request->input('title');
+        $comment->content = $request->input('content');
+        $comment->post_id = $request->input('post_id');
         $comment->user_id = Auth::user()->id;
 
         $comment->save();
 
-        echo 'A new entry has been added successfully. ID = ' . $comment->id;
+        return fractal($comment, $this->commentTransformer)->toArray();
     }
 
     public function show(Comment $comment)
     {
-        $comment = fractal($comment, CommentTransformer::class);
-
-        return $comment->toArray();
+        return fractal($comment, $this->commentTransformer)->toArray();
     }
 
     /**
@@ -75,25 +64,16 @@ class CommentController extends Controller
      * @param \App\Comment $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Comment $comment)
+    public function update(CommentUpdateRequest $request, Comment $comment)
     {
-        if (Auth::user()->id !== $comment->user_id) {
-            return redirect(404);
-        }
+        $this->authorize('update', $comment);
 
-        $data = $request->validate([
-            'title' => 'required|string|max:150',
-            'content' => 'required|string|max:500',
-        ]);
-
-        $comment = Comment::find($comment->id);
-
-        $comment->title = $request->title;
-        $comment->content = $request->content;
+        $comment->title = $request->input('title');
+        $comment->content = $request->input('content');
 
         $comment->save();
 
-        echo 'A comment with id = ' . $comment->id . ' was updated successfully.';
+        return fractal($comment, $this->commentTransformer)->toArray();
     }
 
     /**
@@ -104,14 +84,10 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        if (Auth::user()->id !== $comment->user_id) {
-            return redirect(404);
-        }
-
-        $comment = Comment::find($comment->id);
+        $this->authorize('delete', $comment);
 
         $comment->delete();
 
-        echo 'A comment with id = ' . $comment->id . ' was deleted successfully.';
+        return response(null, 204);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostStoreRequest;
+use App\Http\Requests\PostUpdateRequest;
 use App\Post;
 use App\Comment;
 use App\Author;
@@ -12,36 +14,19 @@ use App\Http\Resources\Post as PostResource;
 class PostController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['index', 'show']]);
-    }
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Post $posts)
     {
-        $posts = Post::all();
-
         // adding related comments to json response.
-        foreach ($posts as $post) {
+        foreach ($posts->all() as $post) {
             $post->comments;
         }
 
         return new PostResource($posts);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        return redirect(404);
     }
 
     /**
@@ -50,22 +35,15 @@ class PostController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostStoreRequest $request, Post $post)
     {
-        $request->validate([
-            'title' => 'required|string|max:150',
-            'content' => 'required|string|max:500',
-        ]);
-
-        $post = new Post();
-
-        $post->title = $request->title;
-        $post->content = $request->content;
+        $post->title = $request->input('title');
+        $post->content = $request->input('content');
         $post->author_id = Author::where('user_id', Auth::user()->id)->first()->id;
 
         $post->save();
 
-        echo 'A new entry has been added successfully. ID = ' . $post->id;
+        return new PostResource($post);
     }
 
     /**
@@ -76,23 +54,10 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $post = Post::find($post->id);
-
         // adding related comments to json response.
         $post->comments;
 
         return new PostResource($post);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Post $post
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Post $post)
-    {
-        return redirect(404);
     }
 
     /**
@@ -102,25 +67,16 @@ class PostController extends Controller
      * @param \App\Post $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostUpdateRequest $request, Post $post)
     {
-        if (Author::where('user_id', Auth::user()->id)->first()->id !== $post->author_id) {
-            return redirect(404);
-        }
+        $this->authorize('update', $post);
 
-        $request->validate([
-            'title' => 'required|string|max:150',
-            'content' => 'required|string|max:500',
-        ]);
-
-        $post = Post::find($post->id);
-
-        $post->title = $request->title;
-        $post->content = $request->content;
+        $post->title = $request->input('title');
+        $post->content = $request->input('content');
 
         $post->save();
 
-        echo 'A post with id = ' . $post->id . ' was updated successfully.';
+        return new PostResource($post);
     }
 
     /**
@@ -131,14 +87,10 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        if (Author::where('user_id', Auth::user()->id)->first()->id !== $post->author_id) {
-            return redirect(404);
-        }
-
-        $post = Post::find($post->id);
+        $this->authorize('delete', $post);
 
         $post->delete();
 
-        echo 'A post with id = ' . $post->id . ' was deleted successfully.';
+        return response(null, 204);
     }
 }

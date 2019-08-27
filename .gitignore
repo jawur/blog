@@ -1,5 +1,15 @@
-# Created by https://www.gitignore.io/api/linux
-# Edit at https://www.gitignore.io/?templates=linux
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
 
 ### Linux ###
 *~
@@ -15,9 +25,3 @@
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
-
-# Vendor folder can be pulled at anytime by copmoser
-vendor
-
-#By security reasons .env file must not be pushed
-.env
