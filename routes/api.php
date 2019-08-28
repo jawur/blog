@@ -13,54 +13,53 @@ use Illuminate\Http\Request;
 |
 */
 
-//Route:::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+Route::middleware('auth:api')->get('/user', function (Request $request) {
+    return $request->user();
+});
 
 Route::get('posts')
     ->uses('PostController@index')
-    ->name('getPosts');
+    ->name('posts.index');
 
 Route::post('posts')
     ->uses('PostController@store')
-    ->name('storePost')
+    ->name('posts.store')
     ->middleware('auth:api');
 
 Route::get('posts/{post}')
     ->uses('PostController@show')
-    ->name('showPost');
+    ->name('posts.show');
 
-Route::put('posts/{post}')
+Route::patch('posts/{post}')
     ->uses('PostController@update')
-    ->name('getPost')
-    ->middleware('auth:api');
+    ->middleware('auth:api')
+    ->name('posts.update');
 
 Route::delete('posts/{post}')
     ->uses('PostController@destroy')
-    ->name('deletePost')
+    ->name('posts.destroy')
     ->middleware('auth:api');
 
 //-----------------------------------------
 
 Route::get('comments')
     ->uses('CommentController@index')
-    ->name('getComments');
+    ->name('comments.index');
 
 Route::post('comments')
     ->uses('CommentController@store')
-    ->name('storeComment')
-    ->middleware('auth:api');
+    ->name('comments.store');
 
 Route::get('comments/{comment}')
     ->uses('CommentController@show')
-    ->name('showComment');
+    ->name('comments.show');
 
-Route::put('comments/{comment}')
+Route::patch('comments/{comment}')
     ->uses('CommentController@update')
-    ->name('getComment')
+    ->name('comments.update')
     ->middleware('auth:api');
 
 Route::delete('comments/{comment}')
     ->uses('CommentController@destroy')
-    ->name('deleteComment')
+    ->name('comments.destroy')
     ->middleware('auth:api');

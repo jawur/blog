@@ -21,10 +21,7 @@ class PostController extends Controller
      */
     public function index(Post $posts)
     {
-        // adding related comments to json response.
-        foreach ($posts->all() as $post) {
-            $post->comments;
-        }
+        $posts = $posts->with('comments')->get();
 
         return new PostResource($posts);
     }
