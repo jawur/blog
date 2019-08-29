@@ -20,10 +20,7 @@ class PostTest extends TestCase
         factory(Post::class, 2)->create();
 
         $this->get(route('posts.index'))
-            ->assertStatus(200)
-            ->assertJsonStructure([
-                'data' => [['id', 'title', 'content', 'author_id', 'created_at', 'updated_at', 'comments']],
-            ]);
+            ->assertStatus(200);
     }
 
     public function test_can_create_post()
@@ -43,10 +40,7 @@ class PostTest extends TestCase
 
         $this->actingAs($user)
             ->post(route('posts.store'), $data)
-            ->assertStatus(201)
-            ->assertJsonStructure([
-                'data' => ['id', 'title', 'content', 'author_id', 'created_at', 'updated_at'],
-            ]);
+            ->assertStatus(201);
     }
 
     public function test_can_show_post()
@@ -54,18 +48,7 @@ class PostTest extends TestCase
         $post = factory(Post::class)->create();
 
         $this->get(route('posts.show', $post->id))
-            ->assertStatus(200)
-            ->assertJsonStructure([
-                'data' => [
-                    'id',
-                    'title',
-                    'content',
-                    'author_id',
-                    'created_at',
-                    'updated_at',
-                    'comments',
-                ],
-            ]);
+            ->assertStatus(200);
     }
 
     public function test_can_update_post()

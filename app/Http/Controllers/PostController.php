@@ -5,10 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use App\Post;
-use App\Comment;
 use App\Author;
 use Auth;
-use Illuminate\Http\Request;
 use App\Http\Resources\Post as PostResource;
 
 class PostController extends Controller
@@ -21,9 +19,7 @@ class PostController extends Controller
      */
     public function index(Post $posts)
     {
-        $posts = $posts->with('comments')->get();
-
-        return new PostResource($posts);
+        return PostResource::collection($posts->all());
     }
 
     /**
@@ -34,9 +30,13 @@ class PostController extends Controller
      */
     public function store(PostStoreRequest $request, Post $post)
     {
+        $author = Author::create([
+            'user_id' => Auth::user()->id,
+        ]);
+
         $post->title = $request->input('title');
         $post->content = $request->input('content');
-        $post->author_id = Author::where('user_id', Auth::user()->id)->first()->id;
+        $post->author_id = $author->id;
 
         $post->save();
 
@@ -51,10 +51,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        // adding related comments to json response.
-        $post->comments;
-
-        return new PostResource($post);
+        return PostResource::collection($post->find($post));
     }
 
     /**

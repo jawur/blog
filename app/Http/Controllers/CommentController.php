@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Comment;
 use App\Http\Requests\CommentStoreRequest;
 use App\Http\Requests\CommentUpdateRequest;
-use Illuminate\Http\Request;
 use League\Fractal\Manager;
 use App\Transformers\CommentTransformer;
 use League\Fractal\Resource\Collection;

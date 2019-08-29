@@ -8,21 +8,18 @@ use Tests\TestCase;
 
 class TagTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
     public function test_tag_can_have_taggables()
     {
+        $numberOfTaggables = 5;
+
         $tag = factory(Tag::class)->create();
 
-        $taggable = factory(Taggable::class)->create([
-
+        factory(Taggable::class, $numberOfTaggables)->create([
             'tag_id' => $tag->id,
-
         ]);
 
-        $this->assertEquals($tag->id, $taggable->tag_id);
+        $taggables = Taggable::where('tag_id', $tag->id)->get();
+
+        $this->assertEquals($numberOfTaggables, $taggables->count());
     }
 }

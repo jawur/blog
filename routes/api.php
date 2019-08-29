@@ -48,7 +48,8 @@ Route::get('comments')
 
 Route::post('comments')
     ->uses('CommentController@store')
-    ->name('comments.store');
+    ->name('comments.store')
+    ->middleware('auth:api');
 
 Route::get('comments/{comment}')
     ->uses('CommentController@show')

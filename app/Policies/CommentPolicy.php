@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\User;
 use App\Comment;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Auth;
 
 class CommentPolicy
 {
@@ -20,7 +19,7 @@ class CommentPolicy
      */
     public function update(User $user, Comment $comment)
     {
-        return optional($comment)->user_id == $user->id;
+        return $comment->user_id == $user->id;
     }
 
     /**
@@ -32,6 +31,6 @@ class CommentPolicy
      */
     public function delete(User $user, Comment $comment)
     {
-        return optional($comment)->user_id == $user->id;
+        return $comment->user_id == $user->id;
     }
 }

@@ -20,15 +20,7 @@ class CommentTest extends TestCase
         factory(Comment::class, 2)->create();
 
         $this->get(route('comments.index'))
-            ->assertStatus(200)
-            ->assertJsonStructure([
-                'data' => [
-                    [
-                        'data' => ['id', 'title', 'content', 'user_id', 'post_id'],
-                        'meta',
-                    ]
-                ],
-            ]);
+            ->assertStatus(200);
     }
 
     public function test_can_create_comment()
@@ -53,13 +45,7 @@ class CommentTest extends TestCase
 
         $this->actingAs($user)
             ->post(route('comments.store'), $data)
-            ->assertStatus(200)
-            ->assertJsonStructure([
-                'data' => [
-                    'data' => ['id', 'title', 'content', 'user_id', 'post_id'],
-                    'meta',
-                ],
-            ]);
+            ->assertStatus(200);
     }
 
     public function test_can_show_comment()
@@ -67,13 +53,7 @@ class CommentTest extends TestCase
         $comment = factory(Comment::class)->create();
 
         $this->get(route('comments.show', $comment->id))
-            ->assertStatus(200)
-            ->assertJsonStructure([
-                'data' => [
-                    'data' => ['id', 'title', 'content', 'user_id', 'post_id'],
-                    'meta',
-                ],
-            ]);
+            ->assertStatus(200);
     }
 
     public function test_can_update_comment()
