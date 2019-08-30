@@ -4,11 +4,14 @@
 
 use App\Post;
 use Faker\Generator as Faker;
+use function foo\func;
 
 $factory->define(Post::class, function (Faker $faker) {
     return [
         'title' => $faker->title,
         'content' => $faker->paragraph,
-        'author_id' => factory(App\Author::class)->create(),
+        'author_id' => function () {
+            return factory(App\Author::class)->create()->id;
+        },
     ];
 });

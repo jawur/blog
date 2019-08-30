@@ -17,11 +17,10 @@ $factory->define(Taggable::class, function (Faker $faker) {
     $taggable = factory($taggableType)->create();
 
     return [
-        'tag_id' => function() {
+        'tag_id' => function () {
             return factory('App\Tag')->create()->id;
         },
         'taggable_type' => $taggableType,
         'taggable_id' => $taggable->id,
     ];
 });
-

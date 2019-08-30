@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Author extends Model
 {
+
+    protected $fillable = ['user_id'];
+
     public function tags()
     {
         return $this->morphToMany(Tag::class, 'taggable');
