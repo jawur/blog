@@ -13,11 +13,11 @@ class CommentTest extends TestCase
     {
         $post = factory(Post::class)->create();
 
-        factory(Comment::class)->create([
+        $comment = factory(Comment::class)->create([
             'post_id' => $post->id,
         ]);
 
-        $comment = Comment::where('post_id', $post->id)->get();
+        $comment = Post::find($post->id)->comments->find($comment->id)->get();
 
         $this->assertEquals($comment->first()->post_id, $post->id);
     }
@@ -26,11 +26,11 @@ class CommentTest extends TestCase
     {
         $user = factory(User::class)->create();
 
-        factory(Comment::class)->create([
+        $comment = factory(Comment::class)->create([
             'user_id' => $user->id,
         ]);
 
-        $comment = Comment::where('user_id', $user->id)->get();
+        $comment = User::find($user->id)->comments->find($comment->id)->get();
 
         $this->assertEquals($comment->first()->user_id, $user->id);
     }

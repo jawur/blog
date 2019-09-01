@@ -19,7 +19,7 @@ class UserTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $comments = Comment::where('user_id', $user->id)->get();
+        $comments = User::find($user->id)->comments;
 
         $this->assertEquals($comments->count(), $numberOfComments);
     }
@@ -32,7 +32,7 @@ class UserTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $author = Author::where('user_id', $user->id)->get();
+        $author = User::find($user->id)->author;
 
         $this->assertEquals($author->first()->user_id, $user->id);
     }

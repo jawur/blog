@@ -19,7 +19,7 @@ class AuthorTest extends TestCase
             'author_id' => $author->id,
         ]);
 
-        $posts = Post::where('author_id', $author->id)->get();
+        $posts = Author::find($author->id)->first()->posts;
 
         $this->assertEquals($numberOfPosts, $posts->count());
     }
@@ -32,8 +32,8 @@ class AuthorTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $author = Author::where('user_id', $user->id)->get();
+        $author = User::find($user->id)->first()->author;
 
-        $this->assertEquals($author->first()->user_id, $user->id);
+        $this->assertEquals($author->user_id, $user->id);
     }
 }

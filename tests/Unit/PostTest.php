@@ -19,7 +19,7 @@ class PostTest extends TestCase
             'post_id' => $post->id,
         ]);
 
-        $comments = Comment::where('post_id', $post->id)->get();
+        $comments = Post::find($post->id)->comments;
 
         $this->assertEquals($numberOfComments, $comments->count());
     }
@@ -28,11 +28,11 @@ class PostTest extends TestCase
     {
         $author = factory(Author::class)->create();
 
-        factory(Post::class)->create([
+        $post = factory(Post::class)->create([
             'author_id' => $author->id,
         ]);
 
-        $post = Post::where('author_id', $author->id)->get();
+        $post = Author::find($author->id)->posts->find($post->id)->get();
 
         $this->assertEquals($post->first()->author_id, $author->id);
     }
