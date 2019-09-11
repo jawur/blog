@@ -40,6 +40,16 @@ Route::delete('posts/{post}')
     ->name('posts.destroy')
     ->middleware('auth:api');
 
+Route::get('posts/{post}/tags')
+    ->uses('PostController@tags')
+    ->name('posts.tags');
+
+//-----------------------------------------
+
+Route::get('authors/{author}/tags')
+    ->uses('AuthorController@tags')
+    ->name('authors.tags');
+
 //-----------------------------------------
 
 Route::get('comments')
@@ -64,3 +74,7 @@ Route::delete('comments/{comment}')
     ->uses('CommentController@destroy')
     ->name('comments.destroy')
     ->middleware('auth:api');
+
+Route::get('comments/{comment}/tags')
+    ->uses('CommentController@tags')
+    ->name('comments.tags');

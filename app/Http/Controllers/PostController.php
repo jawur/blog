@@ -8,6 +8,7 @@ use App\Post;
 use App\Author;
 use Auth;
 use App\Http\Resources\Post as PostResource;
+use App\Http\Resources\Tag as TagResource;
 
 class PostController extends Controller
 {
@@ -86,5 +87,10 @@ class PostController extends Controller
         $post->delete();
 
         return response(null, 204);
+    }
+
+    public function tags(Post $post)
+    {
+        return new TagResource($post->find($post)->first()->tags);
     }
 }

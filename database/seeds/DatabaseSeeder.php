@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
         $this->call(AuthorsTableSeeder::class);
         $this->call(PostsTableSeeder::class);
         $this->call(CommentsTableSeeder::class);
-        $this->call(TagsTableSeeder::class);
+        // don't need that one in here because TaggablesTableSeeder already creates an entry
+        //$this->call(TagsTableSeeder::class);
         $this->call(TaggablesTableSeeder::class);
     }
 }

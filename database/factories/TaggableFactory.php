@@ -9,7 +9,7 @@ $factory->define(Taggable::class, function (Faker $faker) {
 
     $taggables = [
         App\Post::class,
-        App\User::class,
+        App\Author::class,
     ];
 
     //getting random tagged table
